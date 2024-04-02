@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+#Take the necessary inputs
+
 echo "Enter the name of the input file: "
 read input_file
 
@@ -12,7 +14,11 @@ read alpha
 echo "Enter the the name of the output file(with file extension): "
 read output_file
 
+# Get the negetive of the image
+
 ffmpeg -i "$input_file" -vf negate inverted_file.mp4 -y
+
+# Overlay it with a specific opacity
 
 ffmpeg \
     -i "$input_file" -i inverted_file.mp4 \
@@ -22,5 +28,7 @@ ffmpeg \
              format=yuva420p,colorchannelmixer=aa="$alpha"[bottom]; \
         [top][bottom]overlay=shortest=1" \
     -c:v libx264 -c:a aac "$output_file" -y
+
+# Delete the inverted file
 
 rm "$inverted_file"
